@@ -37,7 +37,7 @@ shift 4
 PACKMAN="apt-get"
 PACKARG=""
 CONFIRM="true"
-while getopts ":yf" opt; do
+while getopts ":yc" opt; do
 	case $opt in
 		y )
 			PACKARG="--yes"
@@ -123,7 +123,7 @@ iptables -N IPTRACK
 # loopback -> ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
 # ESTABLISHED,RELATED limit=100/s -> ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -m limit --limit 100/s --limit-burst 1000 -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -m limit --limit 200/s --limit-burst 2000 -j ACCEPT
 # NEW protocol=tcp/ports=http,https,ssh/flags=SYN limit=5/s -> IPTRACK
 iptables -A INPUT -p tcp -m multiport --dports 80,443,50000 -m state --state NEW --tcp-flags ALL SYN -m limit --limit 5/s --limit-burst 50 -j IPTRACK
 # tcp -> REJECT flags=RST (to prevent port scanning)
