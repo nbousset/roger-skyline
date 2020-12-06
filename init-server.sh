@@ -100,8 +100,7 @@ systemctl restart ssh
 #-------------------------------------------------------------------------------------------
 # setup firewall
 
-confirm "The firewall will be configured persistently to accept only SSH/HTTP/HTTPS incoming \
-connections and provide a basic protection against DoS and port scanning."
+confirm "The firewall will be configured persistently to accept only SSH/HTTP/HTTPS incoming connections and provide a basic protection against DoS and port scanning."
 
 # Flush
 iptables -F
@@ -123,7 +122,7 @@ iptables -N IPTRACK
 # loopback -> ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
 # ESTABLISHED,RELATED limit=100/s -> ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -m limit --limit 200/s --limit-burst 2000 -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 # NEW protocol=tcp/ports=http,https,ssh/flags=SYN limit=5/s -> IPTRACK
 iptables -A INPUT -p tcp -m multiport --dports 80,443,50000 -m state --state NEW --tcp-flags ALL SYN -m limit --limit 5/s --limit-burst 50 -j IPTRACK
 # tcp -> REJECT flags=RST (to prevent port scanning)
@@ -146,8 +145,7 @@ iptables-save >/etc/iptables/rules.v4
 #-------------------------------------------------------------------------------------------
 # automate updates and watch /etc/crontab
 
-confirm "A new crontab for root will be setup. Packages will be automatically updated once \
-a week at 4:00 AM."
+confirm "A new crontab for root will be setup. Packages will be automatically updated once a week at 4:00 AM."
 
 echo "$PACKMAN --yes update && $PACKMAN --yes upgrade" > /root/update_script.sh && chmod +x /root/update_script.sh
 echo '0 4 * * 1	/root/update_script.sh >>/var/log/update_script.log 2>&1
