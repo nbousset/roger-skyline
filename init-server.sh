@@ -82,12 +82,18 @@ confirm "The following packages will be installed:
 * sudo
 * ssh
 * iptables-persistent
-* sendmail"
+* sendmail
+* nginx
+* mariadb-server"
 
 $PACKMAN $PACKARG install sudo
 $PACKMAN $PACKARG install ssh
 $PACKMAN $PACKARG install iptables-persistent
 $PACKMAN $PACKARG install sendmail
+$PACKMAN $PACKARG install nginx
+$PACKMAN $PACKARG install mariadb-server
+$PACKMAN $PACKARG install php-fpm #required for nginx (FastCGI Process Manager)
+#$PACKMAN $PACKARG install phpmyadmin #eventually
 
 #-------------------------------------------------------------------------------------------
 # add user to sudo group

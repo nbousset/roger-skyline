@@ -1,0 +1,10 @@
+install nginx
+install mariadb-server
+install php-fpm
+
+create website conf in /etc/nginx/sites-available/
+	root /var/www/website
+	index.php
+	With php-fpm
+create symlink to conf file in /etc/nginx/sites-enabled/
+delete symlink to default in /etc/nginx/sites-enabled/
