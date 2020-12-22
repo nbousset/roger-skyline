@@ -90,6 +90,12 @@ $PACKMAN $PACKARG install iptables-persistent
 $PACKMAN $PACKARG install sendmail
 
 #-------------------------------------------------------------------------------------------
+# add user to sudo group
+
+# could ask for users to be added
+usermod -aG sudo user
+
+#-------------------------------------------------------------------------------------------
 # setup ssh
 
 confirm "SSH will now be configured to only accept public key authentication on port 22222.
