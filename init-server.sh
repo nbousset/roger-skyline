@@ -95,6 +95,7 @@ If you want to add public keys via SSH, you should add them before continuing."
 sed -i "s/^#Port.*/Port 50000/" /etc/ssh/sshd_config
 sed -i "s/^#PermitRootLogin.*/PermitRootLogin no/" /etc/ssh/sshd_config
 sed -i "s/^#PasswordAuthentication.*/PasswordAuthentication no/" /etc/ssh/sshd_config
+sed -i "s/^#PubkeyAuthentication.*/PubkeyAuthentication yes/" /etc/ssh/sshd_config
 systemctl restart ssh
 
 #-------------------------------------------------------------------------------------------
