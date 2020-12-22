@@ -89,10 +89,10 @@ $PACKMAN $PACKARG install sendmail
 #-------------------------------------------------------------------------------------------
 # setup ssh
 
-confirm "SSH will now be configured to only accept public key authentication on port 50000.
+confirm "SSH will now be configured to only accept public key authentication on port 22222.
 If you want to add public keys via SSH, you should add them before continuing."
 
-sed -i "s/^#Port.*/Port 50000/" /etc/ssh/sshd_config
+sed -i "s/^#Port.*/Port 22222/" /etc/ssh/sshd_config
 sed -i "s/^#PermitRootLogin.*/PermitRootLogin no/" /etc/ssh/sshd_config
 sed -i "s/^#PasswordAuthentication.*/PasswordAuthentication no/" /etc/ssh/sshd_config
 sed -i "s/^#PubkeyAuthentication.*/PubkeyAuthentication yes/" /etc/ssh/sshd_config
