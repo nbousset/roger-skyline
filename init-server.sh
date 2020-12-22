@@ -146,8 +146,8 @@ iptables-save >/etc/iptables/rules.v4
 #-------------------------------------------------------------------------------------------
 # automate updates and watch /etc/crontab
 
-confirm "A new crontab for root will be setup. Packages will be automatically updated once \
-a week at 4:00 AM."
+confirm "A new crontab for root will be setup:
+Packages will be automatically updated once a week at 4:00 AM."
 
 echo "$PACKMAN --yes update && $PACKMAN --yes upgrade" > /root/update_script.sh && chmod +x /root/update_script.sh
 echo '0 4 * * 1	/root/update_script.sh >>/var/log/update_script.log 2>&1
