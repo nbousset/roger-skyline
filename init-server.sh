@@ -78,12 +78,12 @@ $PACKMAN $PACKARG upgrade
 confirm "The following packages will be installed:
 * sudo
 * ssh
-* iptables-persistent
+* $IPTABLES-persistent
 * sendmail"
 
 $PACKMAN $PACKARG install sudo
 $PACKMAN $PACKARG install ssh
-$PACKMAN $PACKARG install iptables-persistent
+$PACKMAN $PACKARG install $IPTABLES-persistent
 $PACKMAN $PACKARG install sendmail
 
 #-------------------------------------------------------------------------------------------
@@ -101,47 +101,49 @@ systemctl restart ssh
 #-------------------------------------------------------------------------------------------
 # setup firewall
 
+IPTABLES="/usr/sbin/iptables"
+
 confirm "The firewall will be configured persistently to accept only SSH/HTTP/HTTPS incoming connections and provide a basic protection against DoS and port scanning."
 
 # Flush
-iptables -F
-iptables -X
-iptables -t nat -F
-iptables -t nat -X
-iptables -t mangle -F
-iptables -t mangle -X
+$IPTABLES -F
+$IPTABLES -X
+$IPTABLES -t nat -F
+$IPTABLES -t nat -X
+$IPTABLES -t mangle -F
+$IPTABLES -t mangle -X
 
 # Default policies in built-in chains
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT ACCEPT
+$IPTABLES -P INPUT DROP
+$IPTABLES -P FORWARD DROP
+$IPTABLES -P OUTPUT ACCEPT
 
 # Add user-defined chain for IP tracking (DoS prevention)
-iptables -N IPTRACK
+$IPTABLES -N IPTRACK
 
 # INPUT CHAIN
 # loopback -> ACCEPT
-iptables -A INPUT -i lo -j ACCEPT
+$IPTABLES -A INPUT -i lo -j ACCEPT
 # ESTABLISHED,RELATED limit=100/s -> ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 # NEW protocol=tcp/ports=http,https,ssh/flags=SYN limit=5/s -> IPTRACK
-iptables -A INPUT -p tcp -m multiport --dports 80,443,50000 -m state --state NEW --tcp-flags ALL SYN -m limit --limit 5/s --limit-burst 50 -j IPTRACK
+$IPTABLES -A INPUT -p tcp -m multiport --dports 80,443,50000 -m state --state NEW --tcp-flags ALL SYN -m limit --limit 5/s --limit-burst 50 -j IPTRACK
 # tcp -> REJECT flags=RST (to prevent port scanning)
-iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+$IPTABLES -A INPUT -p tcp -j REJECT --reject-with tcp-reset
 # default policy DROP
 
 # IPTRACK CHAIN
 # limit=2/s/IP -> ACCEPT
-iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 -j ACCEPT
+$IPTABLES -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 -j ACCEPT
 # LOG in /var/log/kern.log
-iptables -A IPTRACK -j LOG --log-prefix '/!\ SUSPECT IP: '
+$IPTABLES -A IPTRACK -j LOG --log-prefix '/!\ SUSPECT IP: '
 # tcp -> REJECT flags=RST (to prevent port scanning)
-iptables -A IPTRACK -p tcp -j REJECT --reject-with tcp-reset
+$IPTABLES -A IPTRACK -p tcp -j REJECT --reject-with tcp-reset
 # DROP
-iptables -A IPTRACK -j DROP
+$IPTABLES -A IPTRACK -j DROP
 
 # save the rules to make them persistent
-iptables-save >/etc/iptables/rules.v4
+$IPTABLES-save >/etc/$IPTABLES/rules.v4
 
 #-------------------------------------------------------------------------------------------
 # automate updates and watch /etc/crontab
