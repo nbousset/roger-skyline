@@ -1,7 +1,7 @@
 <?php
-function error($redirect_url, $msg)
+function error($redirect, $msg)
 {
-	header('Location: ' . $redirect_url . '?error=' . $msg);
+	header('Location: ' . $redirect . '?error=' . $msg);
 	exit();
 }
 ?>
