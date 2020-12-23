@@ -37,6 +37,7 @@ function check_db($email, $passw)
 	$conndb->close();
 }
 
+session_start();
 if (!isset($_SESSION['email'])) {
 	$email = get_email();
 	$passw = get_passw();

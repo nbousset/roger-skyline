@@ -41,6 +41,7 @@ function update_db($email, $passw)
 	$conndb->close();
 }
 
+session_start();
 $email = get_email();
 $passw = get_passw();
 update_db($email, $passw);
