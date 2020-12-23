@@ -163,6 +163,10 @@ iptables-save >/etc/iptables/rules.v4
 #-------------------------------------------------------------------------------------------
 # stop some useless services
 
+confirm "The following services will be disabled:
+* keyboard-setup
+* console-setup"
+
 systemctl stop keyboard-setup
 systemctl disable keyboard-setup
 systemctl stop console-setup
