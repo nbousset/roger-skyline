@@ -44,7 +44,7 @@ if (!isset($_SESSION['email'])) {
 	check_db($email, $passw);
 	$_SESSION['email'] = $email;
 }
-header('Location: homepage.php');
+header('Location: index.php');
 exit();
 
 ?>
