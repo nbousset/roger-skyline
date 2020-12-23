@@ -175,7 +175,7 @@ iptables-save > /etc/iptables/rules.v4
 # create a service to automatically save and restore ipset sets at shutdown/boot
 echo '[Unit]
 Description=ipset persistent configuration
-Requires=network.target
+Before=netfilter-persistent.service
 
 [Service]
 Type=oneshot
