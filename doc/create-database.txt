@@ -3,11 +3,11 @@ install php-fpm
 install php-mysqli
 
 mysql_secure_installation
+sudo mysql -u root -p
 
-create database
-	CREATE DATABASE membersdb;
-	USE membersdb;
-	CREATE TABLE members (email VARCHAR(128), passw(256), PRIMARY KEY(email));
-	CREATE USER admindb@localhost IDENTIFIED BY 'passwordadmindb'
-	GRANT ALL PRIVILEGES on membersdb.* to admindb@localhost;
-	FLUSH PRIVILEGES
+>CREATE DATABASE membersDB;
+>USE membersDB;
+>CREATE TABLE members (email VARCHAR(128), passw VARCHAR(256), PRIMARY KEY(email));
+>CREATE USER membersDBadmin@localhost IDENTIFIED BY 'passwordDBadmin';
+>GRANT ALL PRIVILEGES on membersDB.* to membersDBadmin@localhost;
+>FLUSH PRIVILEGES;

@@ -183,7 +183,7 @@ crontab -u root /root/crontab
 #-------------------------------------------------------------------------------------------
 # configure nginx
 
-confirm "Nginx will be configured to host a web server in /var/www/roger-skyline/."
+confirm "Nginx will be configured to host a website in /var/www/roger-skyline/."
 
 echo 'server {
 	listen 80;
