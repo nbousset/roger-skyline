@@ -10,7 +10,7 @@ if (isset($_SESSION['email']))
 	<html>
 		<div align="center">
 			<a href="signout.php">SIGN OUT</a><br>
-		<div/>
+		</div>
 	</html>
 	<?php
 }
@@ -21,7 +21,7 @@ else
 		<div align="center">
 			<a href="signupform.php">SIGN UP</a><br>
 			<a href="signinform.php">SIGN IN</a><br>
-		<div/>
+		</div>
 	</html>
 	<?php
 }
