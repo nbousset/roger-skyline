@@ -21,7 +21,7 @@
 			{
 				echo '<br/>' . $_GET['error'];
 				if ($_GET['error'] == 'You are not registered.')
-					echo "<br/><br/><a href='signup_form.php'>SIGN UP<a/>";
+					echo "<br/><br/><a href='signupform.php'>SIGN UP<a/>";
 				$_GET['error'] = NULL;
 			}
 		?>
