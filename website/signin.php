@@ -37,13 +37,12 @@ function check_db($email, $passw)
 	$conndb->close();
 }
 
-if (isset($_SESSION['email'])) {
-	header('Location: homepage.php');
+if (!isset($_SESSION['email'])) {
+	$email = get_email();
+	$passw = get_passw();
+	check_db($email, $passw);
+	$_SESSION['email'] = $email;
 }
-$email = get_email();
-$passw = get_passw();
-check_db($email, $passw);
-$_SESSION['email'] = $email;
 header('Location: homepage.php');
 exit();
 

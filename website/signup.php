@@ -39,13 +39,13 @@ function update_db($email, $passw)
 	$request = "INSERT INTO members (email,passw) VALUES ('$email','$passw')";
 	$conndb->query($request);
 	$conndb->close();
-	$_SESSION['email'] = $email;
-	header('Location: signin.php');
 }
 
 $email = get_email();
 $passw = get_passw();
 update_db($email, $passw);
+$_SESSION['email'] = $email;
+header('Location: signin.php');
 exit();
 
 ?>
