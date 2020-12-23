@@ -169,7 +169,8 @@ iptables -A IPTRACK -j DROP
 
 # save the rules to make them persistent
 iptables-save > /etc/iptables/rules.v4
-
+# save the ipset blacklist
+ipset save > /etc/iptables/ipset.v4
 # create a service to automatically save and restore ipset sets at shutdown/boot
 echo '[Unit]
 Description=ipset persistent configuration
@@ -183,7 +184,6 @@ ExecStop=/sbin/ipset save -file /etc/iptables/ipset.v4
 [Install]
 RequiredBy=netfilter-persistent.service' > /lib/systemd/system/ipset-persistent.service
 
-touch /etc/iptables/ipset.v4
 chmod +x /lib/systemd/system/ipset-persistent.service
 ln -s /lib/systemd/system/ipset-persistent.service /etc/systemd/system/ipset-persistent.service
 systemctl daemon-reload
