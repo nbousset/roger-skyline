@@ -16,13 +16,12 @@ function get_passw()
 		error('signinform.php', 'All fields must be completed.');
 	}
 	$password = htmlspecialchars($_POST['passw']);
-	#$password = password_hash($password, PASSWORD_DEFAULT);
 	return $password;
 }
 
 function check_db($email, $passw)
 {
-	$conndb = new mysqli("127.0.0.1", "membersDBadmin", "passwordDBadmin", "membersDB");
+	$conndb = new mysqli("localhost", "membersDBadmin", "passwordDBadmin", "membersDB");
 	$request = "SELECT * FROM members WHERE email='$email'"; 
 	$result = $conndb->query($request);
 	if ($result->num_rows == 0) {
