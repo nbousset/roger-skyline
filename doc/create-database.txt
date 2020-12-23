@@ -1,6 +1,4 @@
 install mariadb-server
-install php-fpm
-install php-mysqli
 
 mysql_secure_installation
 sudo mysql -u root -p
