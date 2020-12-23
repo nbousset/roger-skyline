@@ -5,7 +5,7 @@
 		<meta charset="utf-8">
 	</head>
 	<div align="center">
-		<h2>LOG IN</h2>
+		<h2>SIGN IN</h2>
 		<br /><br />
 		<form method="post" action="signin.php">
 			<label for="email">Email :</label>
@@ -16,18 +16,18 @@
 			<br/><br/>
 			<input type="submit" name="signinform" value="SIGN IN">
 		</form>
-		<?php
-			if (isset($_GET['error']))
-			{
-				echo '<br/>' . $_GET['error'];
-				if ($_GET['error'] == 'You are not registered.') {
-					?>
-					<div align="center">
-						<a href="signupform.php">SIGN UP</a><br>
-					</div>
-					<?php
-				$_GET['error'] = NULL;
-			}
-		?>
+	</div>
+	<div align="center">
+	<?php
+	if (isset($_GET['error']))
+	{
+		echo '<br/>' . $_GET['error'];
+		if ($_GET['error'] == 'You are not registered.') {
+			?>
+			<a href="signupform.php">SIGN UP</a><br>
+			<?php
+			$_GET['error'] = NULL;
+		}
+	?>
 	</div>
 </html>

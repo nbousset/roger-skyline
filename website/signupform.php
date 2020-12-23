@@ -5,7 +5,7 @@
 		<meta charset="utf-8">
 	</head>
 	<div align="center">
-		<h2>INSCRIPTION</h2>
+		<h2>SIGN UP</h2>
 		<br /><br />
 		<form method="post" action="signup.php">
 			<label for="email">Email :</label>
