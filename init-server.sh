@@ -67,7 +67,7 @@ sed -i "s/iface $NETWINT inet dhcp/auto $NETWINT/" /etc/network/interfaces
 echo "iface $NETWINT inet static
 address $ADDRESS
 netmask $NETMASK
-gateway $GATEWAY" >"/etc/network/interfaces.d/$NETWINT"
+gateway $GATEWAY" > "/etc/network/interfaces.d/$NETWINT"
 systemctl restart networking
 
 #-------------------------------------------------------------------------------------------
@@ -80,6 +80,7 @@ confirm "The following packages will be installed:
 * vim
 * sudo
 * ssh
+* ipset
 * iptables-persistent
 * sendmail
 * nginx
@@ -90,6 +91,7 @@ confirm "The following packages will be installed:
 $PACKMAN $PACKARG install vim
 $PACKMAN $PACKARG install sudo
 $PACKMAN $PACKARG install ssh
+$PACKMAN $PACKARG install ipset
 $PACKMAN $PACKARG install iptables-persistent
 $PACKMAN $PACKARG install sendmail
 $PACKMAN $PACKARG install nginx
@@ -118,7 +120,8 @@ systemctl restart ssh
 #-------------------------------------------------------------------------------------------
 # setup firewall
 
-confirm "The firewall will be configured persistently to accept only SSH/HTTP/HTTPS incoming connections and provide a basic protection against DoS and port scanning."
+confirm "The firewall will be configured to only accept local communication and SSH/HTTP/HTTPS incoming connections.
+It will provide a basic protection against DoS and port scanning"
 
 # Flush
 iptables -F
@@ -136,9 +139,14 @@ iptables -P OUTPUT ACCEPT
 # Add user-defined chain for IP tracking (DoS prevention)
 iptables -N IPTRACK
 
+# use ipset module to create a blacklist for suspect IPs. IPs are removed from the blacklist after 60sec
+ipset create blacklist hash:ip timeout 60
+
 # INPUT CHAIN
 # loopback -> ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
+# blacklist -> DROP
+iptables -A INPUT -m set --match-set blacklist src -j DROP
 # ESTABLISHED,RELATED limit=100/s -> ACCEPT
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 # NEW protocol=tcp/ports=http,https,ssh/flags=SYN limit=5/s -> IPTRACK
@@ -147,9 +155,11 @@ iptables -A INPUT -p tcp -m multiport --dports 80,443,22222 -m state --state NEW
 iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
 # default policy DROP
 
-# IPTRACK CHAIN
+# IPTRACK CHAIN # should add suspect ips in another table and reject them in prerouting
 # limit=2/s/IP -> ACCEPT
 iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 -j ACCEPT
+# blacklist IP
+iptables -A IPTRACK -j SET --add-set blacklist src
 # LOG in /var/log/kern.log
 iptables -A IPTRACK -j LOG --log-prefix '/!\ SUSPECT IP: '
 # tcp -> REJECT flags=RST (to prevent port scanning)
@@ -158,7 +168,25 @@ iptables -A IPTRACK -p tcp -j REJECT --reject-with tcp-reset
 iptables -A IPTRACK -j DROP
 
 # save the rules to make them persistent
-iptables-save >/etc/iptables/rules.v4
+iptables-save > /etc/iptables/rules.v4
+
+# create a service to automatically save and restore ipset sets at shutdown/boot
+echo '[Unit]
+Description=ipset persistent configuration
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/ipset restore < /etc/iptables/ipset.v4
+ExecStop=/sbin/ipset save > /etc/iptables/ipset.v4
+
+[Install]
+RequiredBy=netfilter-persistent.service' > /lib/systemd/system/ipset-persistent.service
+
+chmod +x /lib/systemd/system/ipset-persistent.service
+ln -s /lib/systemd/system/ipset-persistent.service /etc/systemd/system/ipset-persistent.service
+systemctl daemon-reload
+systemctl enable ipset-persistent.service
 
 #-------------------------------------------------------------------------------------------
 # stop some useless services
@@ -180,12 +208,12 @@ Packages will be automatically updated once a week at 4:00 AM."
 
 echo "$PACKMAN --yes update && $PACKMAN --yes upgrade" > /root/update_script.sh && chmod +x /root/update_script.sh
 echo '0 4 * * 1	/root/update_script.sh >>/var/log/update_script.log 2>&1
-@reboot		/root/update_script.sh >>/var/log/update_script.log 2>&1' >/root/crontab
+@reboot		/root/update_script.sh >>/var/log/update_script.log 2>&1' > /root/crontab
 
 echo 'if test -n "$(find /etc/crontab -mtime -1 2>/dev/null)"; then
 	echo "/etc/crontab has been modified in the last 24 hours:\n\t$(ls -la /etc/crontab)" | sendmail root@localhost
-fi' >/root/watch_cron.sh && chmod +x /root/watch_cron.sh
-echo '0 0 * * *	/root/watch_cron.sh' >>/root/crontab
+fi' > /root/watch_cron.sh && chmod +x /root/watch_cron.sh
+echo '0 0 * * *	/root/watch_cron.sh' >> /root/crontab
 
 crontab -u root /root/crontab
 
