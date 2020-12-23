@@ -121,7 +121,7 @@ systemctl restart ssh
 # setup firewall
 
 confirm "The firewall will be configured to only accept local communication and SSH/HTTP/HTTPS incoming connections.
-It will provide a basic protection against DoS and port scanning"
+It will provide a basic protection against DoS and port scanning."
 
 # Flush
 iptables -F
@@ -155,7 +155,7 @@ iptables -A INPUT -p tcp -m multiport --dports 80,443,22222 -m state --state NEW
 iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
 # default policy DROP
 
-# IPTRACK CHAIN # should add suspect ips in another table and reject them in prerouting
+# IPTRACK CHAIN
 # limit=2/s/IP -> ACCEPT
 iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 -j ACCEPT
 # blacklist IP
@@ -183,6 +183,7 @@ ExecStop=/sbin/ipset save -file /etc/iptables/ipset.v4
 [Install]
 RequiredBy=netfilter-persistent.service' > /lib/systemd/system/ipset-persistent.service
 
+touch /etc/iptables/ipset.v4
 chmod +x /lib/systemd/system/ipset-persistent.service
 ln -s /lib/systemd/system/ipset-persistent.service /etc/systemd/system/ipset-persistent.service
 systemctl daemon-reload
