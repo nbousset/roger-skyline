@@ -3,21 +3,19 @@
 OLDPATH="$PATH"
 export PATH="/usr/sbin:$PATH"
 
-# This script must be run as root and assumes that it is running on Debian.
+# This script must be run as root and assumes that it is running on Debian 10.
 # It doesn't handle errors and may have an undefined behaviour if a command fails or if an
 # wrong parameter is provided.
 
 #-------------------------------------------------------------------------------------------
 # usage
 
-usage()
-{
+usage() {
 	echo "usage: $(basename $0) [NETWORK INTERFACE] [IP ADDRESS] [NETMASK] [GATEWAY] [options]..."
 	exit 1
 }
 
-options()
-{
+options() {
 	echo "options:
 	-y: force yes for packages installation
 	-c: force confirmation between installation steps"
@@ -161,6 +159,14 @@ iptables -A IPTRACK -j DROP
 
 # save the rules to make them persistent
 iptables-save >/etc/iptables/rules.v4
+
+#-------------------------------------------------------------------------------------------
+# stop some useless services
+
+systemctl stop keyboard-setup
+systemctl disable keyboard-setup
+systemctl stop console-setup
+systemctl disable console-setup
 
 #-------------------------------------------------------------------------------------------
 # automate updates and watch /etc/crontab
