@@ -148,8 +148,8 @@ iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
 # default policy DROP
 
 # IPTRACK CHAIN
-# limit=5/s/IP -> ACCEPT
-iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 5/s --hashlimit-burst 5 -j ACCEPT
+# limit=2/s/IP -> ACCEPT
+iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 -j ACCEPT
 # LOG in /var/log/kern.log
 iptables -A IPTRACK -j LOG --log-prefix '/!\ SUSPECT IP: '
 # tcp -> REJECT flags=RST (to prevent port scanning)
