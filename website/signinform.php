@@ -17,17 +17,17 @@
 			<input type="submit" name="signinform" value="SIGN IN">
 		</form>
 	</div>
-	<div align="center">
 	<?php
 	if (isset($_GET['error']))
 	{
 		echo '<br/>' . $_GET['error'];
 		if ($_GET['error'] == 'You are not registered.') {
 			?>
-			<a href="signupform.php">SIGN UP</a><br>
+			<div align="center">
+				<a href="signupform.php">SIGN UP</a><br>
+			</div>
 			<?php
 			$_GET['error'] = NULL;
 		}
 	?>
-	</div>
 </html>
