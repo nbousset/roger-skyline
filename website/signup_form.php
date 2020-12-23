@@ -11,8 +11,8 @@
 			<label for="email">Pseudo :</label>
 			<input type="text" name="email" placeholder="Enter your email" autocomplete="off"/>
 			<br/>
-			<label for="password">Password :</label>
-			<input type="password" name="password" placeholder="Choose a password" autocomplete="off"/>
+			<label for="passw">Password :</label>
+			<input type="passw" name="passw" placeholder="Choose a password" autocomplete="off"/>
 			<br/><br/>
 			<input type="submit" name="signupform" value="SUBMIT">
 		</form>
