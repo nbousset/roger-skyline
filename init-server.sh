@@ -79,13 +79,16 @@ $PACKMAN $PACKARG update
 $PACKMAN $PACKARG upgrade
 
 confirm "The following packages will be installed:
+* vim
 * sudo
 * ssh
 * iptables-persistent
 * sendmail
 * nginx
-* mariadb-server"
+* mariadb-server
+* php-fpm"
 
+$PACKMAN $PACKARG install vim
 $PACKMAN $PACKARG install sudo
 $PACKMAN $PACKARG install ssh
 $PACKMAN $PACKARG install iptables-persistent
