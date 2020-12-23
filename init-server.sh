@@ -189,7 +189,7 @@ RequiredBy=netfilter-persistent.service' \
 
 # create the 2 scripts used by the service
 echo '#!/bin/sh
-/sbin/ipset restore < /etc/iptables/sets.v4 || /sbin/ipset create blacklist hash:ip timeout 60 && /sbin/ipsave -file /etc/iptables/ipset.v4; exit 0' \
+/sbin/ipset restore < /etc/iptables/sets.v4 || /sbin/ipset create blacklist hash:ip timeout 60; exit 0' \
 > /usr/local/sbin/ipset-restore.sh && chmod +x /usr/local/sbin/ipset-restore.sh
 echo '#!/bin/sh
 /sbin/ipset save > /etc/iptables/sets.v4; exit 0' \
@@ -198,6 +198,7 @@ echo '#!/bin/sh
 # reload services and enable ours
 systemctl daemon-reload
 systemctl enable ipset-persistent.service
+systemctl start ipset-persistent.service
 
 #-------------------------------------------------------------------------------------------
 # stop some useless services
