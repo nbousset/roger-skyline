@@ -8,11 +8,11 @@
 		<h2>INSCRIPTION</h2>
 		<br /><br />
 		<form method="post" action="signup.php">
-			<label for="email">Pseudo :</label>
+			<label for="email">Email :</label>
 			<input type="text" name="email" placeholder="Enter your email" autocomplete="off"/>
 			<br/>
 			<label for="passw">Password :</label>
-			<input type="passw" name="passw" placeholder="Choose a password" autocomplete="off"/>
+			<input type="password" name="passw" placeholder="Choose a password" autocomplete="off"/>
 			<br/><br/>
 			<input type="submit" name="signupform" value="SUBMIT">
 		</form>
