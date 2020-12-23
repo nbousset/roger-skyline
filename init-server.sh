@@ -170,22 +170,32 @@ iptables -A IPTRACK -j DROP
 # save the rules to make them persistent
 iptables-save > /etc/iptables/rules.v4
 # save the ipset blacklist
-ipset save > /etc/iptables/ipset.v4
+#ipset save > /etc/iptables/ipset.v4
+
 # create a service to automatically save and restore ipset sets at shutdown/boot
 echo '[Unit]
 Description=ipset persistent configuration
+Requires=network.target
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/sbin/ipset restore -file /etc/iptables/ipset.v4
-ExecStop=/sbin/ipset save -file /etc/iptables/ipset.v4
+ExecStart=/usr/local/sbin/ipset-restore.sh
+ExecStop=/usr/local/sbin/ipset-save.sh
 
 [Install]
-RequiredBy=netfilter-persistent.service' > /lib/systemd/system/ipset-persistent.service
+RequiredBy=netfilter-persistent.service' \
+> /etc/systemd/system/ipset-persistent.service && chmod +x /etc/systemd/system/ipset-persistent.service
 
-chmod +x /lib/systemd/system/ipset-persistent.service
-ln -s /lib/systemd/system/ipset-persistent.service /etc/systemd/system/ipset-persistent.service
+# create the 2 scripts used by the service
+echo '#!/bin/sh
+/sbin/ipset restore < /etc/iptables/sets.v4 || /sbin/ipset create blacklist hash:ip timeout 60 && /sbin/ipsave -file /etc/iptables/ipset.v4; exit 0' \
+> /usr/local/sbin/ipset-restore.sh && chmod +x /usr/local/sbin/ipset-restore.sh
+echo '#!/bin/sh
+/sbin/ipset save > /etc/iptables/sets.v4; exit 0' \
+> /usr/local/sbin/ipset-save.sh && chmod +x /usr/local/sbin/ipset-save.sh
+
+# reload services and enable ours
 systemctl daemon-reload
 systemctl enable ipset-persistent.service
 
@@ -207,13 +217,20 @@ systemctl disable console-setup
 confirm "A new crontab for root will be setup:
 Packages will be automatically updated once a week at 4:00 AM."
 
-echo "$PACKMAN --yes update && $PACKMAN --yes upgrade" > /root/update_script.sh && chmod +x /root/update_script.sh
+# create update_script
+echo "#!/bin/sh
+$PACKMAN --yes update && $PACKMAN --yes upgrade" \
+> /root/update_script.sh && chmod +x /root/update_script.sh
+# add crontab
 echo '0 4 * * 1	/root/update_script.sh >>/var/log/update_script.log 2>&1
 @reboot		/root/update_script.sh >>/var/log/update_script.log 2>&1' > /root/crontab
 
-echo 'if test -n "$(find /etc/crontab -mtime -1 2>/dev/null)"; then
+# create watch_cron script
+echo '#!/bin/sh
+if test -n "$(find /etc/crontab -mtime -1 2>/dev/null)"; then
 	echo "/etc/crontab has been modified in the last 24 hours:\n\t$(ls -la /etc/crontab)" | sendmail root@localhost
 fi' > /root/watch_cron.sh && chmod +x /root/watch_cron.sh
+# add crontab
 echo '0 0 * * *	/root/watch_cron.sh' >> /root/crontab
 
 crontab -u root /root/crontab
