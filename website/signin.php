@@ -4,7 +4,7 @@ include 'utils.php';
 function get_email()
 {
 	if (!isset($_POST['email']) || empty($_POST['email'])) {
-		error('signin_form.php', 'All fields must be completed');
+		error('signinform.php', 'All fields must be completed');
 	}
 	$email = htmlspecialchars($_POST['email']);
 	return $email;
@@ -13,9 +13,9 @@ function get_email()
 function get_passw()
 {
 	if (!isset($_POST['passw']) || empty($_POST['passw'])) {
-		error('signin_form.php', 'All fields must be completed.');
+		error('signinform.php', 'All fields must be completed.');
 	}
-	$password = htmlspecialchars($_POST['password']);
+	$password = htmlspecialchars($_POST['passw']);
 	#$password = password_hash($password, PASSWORD_DEFAULT);
 	return $password;
 }
@@ -27,24 +27,24 @@ function check_db($email, $passw)
 	$result = $conndb->query($request);
 	if ($result->num_rows == 0) {
 		$conndb->close();
-		error('signin_form.php', 'You are not registered.');
+		error('signinform.php', 'You are not registered.');
 	}
 	$member = $result->fetch_assoc();
 	if (!password_verify($passw, $member['passw'])) {
 		$conndb->close();
-		error('signin_form.php', 'Wrong password.');
+		error('signinform.php', 'Wrong password.');
 	}
 	$conndb->close();
 }
 
 if (isset($_SESSION['email'])) {
-	header('Location: index.php');
+	header('Location: homepage.php');
 }
 $email = get_email();
 $passw = get_passw();
 check_db($email, $passw);
 $_SESSION['email'] = $email;
-header('Location: index.php');
+header('Location: homepage.php');
 exit();
 
 ?>

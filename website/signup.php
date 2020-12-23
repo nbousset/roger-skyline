@@ -1,14 +1,13 @@
-
 <?php
 include 'utils.php';
 
 function get_email()
 {
 	if (!isset($_POST['email']) || empty($_POST['email'])) {
-		error('signup_form.php', 'All fields must be completed');
+		error('signupform.php', 'All fields must be completed');
 	}
 	if (strlen($_POST['email']) > 128) {
-		error('signup_form.php', 'Your email is too long');
+		error('signupform.php', 'Your email is too long');
 	}
 	$email = htmlspecialchars($_POST['email']);
 	return $email;
@@ -17,12 +16,12 @@ function get_email()
 function get_passw()
 {
 	if (!isset($_POST['passw']) || empty($_POST['passw'])) {
-		error('signup_form.php', 'All fields must be completed.');
+		error('signupform.php', 'All fields must be completed.');
 	}
 	$passw = htmlspecialchars($_POST['passw']);
 	$passw = password_hash($passw, PASSWORD_DEFAULT);
 	if (strlen($_POST['passw']) > 256) {
-		error('signup_form.php', 'Your password is too long.');
+		error('signupform.php', 'Your password is too long.');
 	}
 	return $passw;
 }
@@ -35,13 +34,13 @@ function update_db($email, $passw)
 	$result = $conndb->query($request);
 	if ($result->num_rows) {
 		$conndb->close();
-		error('signup_form.php', 'This email is already registered.');
+		error('signupform.php', 'This email is already registered.');
 	}
 	$request = "INSERT INTO members (email,passw) VALUES ('$email','$passw')";
 	$conndb->query($request);
 	$conndb->close();
 	$_SESSION['email'] = $email;
-	header('Location: index.php');
+	header('Location: signin.php');
 }
 
 $email = get_email();
