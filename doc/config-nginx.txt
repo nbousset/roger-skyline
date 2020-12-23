@@ -1,8 +1,0 @@
-install nginx
-
-create website conf in /etc/nginx/sites-available/
-	root /var/www/website
-	index.php
-	With php-fpm
-create symlink to website conf file in /etc/nginx/sites-enabled/
-delete symlink to default in /etc/nginx/sites-enabled/

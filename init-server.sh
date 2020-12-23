@@ -86,6 +86,7 @@ confirm "The following packages will be installed:
 * sendmail
 * nginx
 * mariadb-server
+* php-mysqli
 * php-fpm"
 
 $PACKMAN $PACKARG install vim
@@ -95,6 +96,7 @@ $PACKMAN $PACKARG install iptables-persistent
 $PACKMAN $PACKARG install sendmail
 $PACKMAN $PACKARG install nginx
 $PACKMAN $PACKARG install mariadb-server
+$PACKMAN $PACKARG install php-mysqli
 $PACKMAN $PACKARG install php-fpm #required for nginx (FastCGI Process Manager)
 #$PACKMAN $PACKARG install phpmyadmin #eventually
 
