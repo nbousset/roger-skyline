@@ -177,8 +177,8 @@ Description=ipset persistent configuration
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/sbin/ipset restore < /etc/iptables/ipset.v4
-ExecStop=/sbin/ipset save > /etc/iptables/ipset.v4
+ExecStart=/sbin/ipset restore -file /etc/iptables/ipset.v4
+ExecStop=/sbin/ipset save -file /etc/iptables/ipset.v4
 
 [Install]
 RequiredBy=netfilter-persistent.service' > /lib/systemd/system/ipset-persistent.service
