@@ -14,7 +14,7 @@
 			<label for="passw">Password :</label>
 			<input type="password" name="passw" placeholder="Choose a password" autocomplete="off"/>
 			<br/><br/>
-			<input type="submit" name="signupform" value="SUBMIT">
+			<input type="submit" name="signupform" value="SIGN UP">
 		</form>
 		<?php
 			if (isset($_GET['error']))

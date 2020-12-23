@@ -14,7 +14,7 @@
 			<label for="passw">Password :</label>
 			<input type="password" name="passw" placeholder="Enter your password" autocomplete="off"/>
 			<br/><br/>
-			<input type="submit" name="signinform" value="LOG IN" autocomplete="off">
+			<input type="submit" name="signinform" value="SIGN IN" autocomplete="off">
 		</form>
 		<?php
 			if (isset($_GET['error']))
@@ -22,11 +22,9 @@
 				echo '<br/>' . $_GET['error'];
 				if ($_GET['error'] == 'You are not registered.') {
 					?>
-					<html>
 						<div align="center">
 							<a href="signupform.php">SIGN UP</a><br>
 						<div/>
-					</html>
 					<?php
 				$_GET['error'] = NULL;
 			}
