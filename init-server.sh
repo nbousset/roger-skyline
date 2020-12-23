@@ -157,7 +157,7 @@ iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
 
 # IPTRACK CHAIN
 # limit=2/s/IP -> ACCEPT
-iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 -j ACCEPT
+iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 --hashlimit-htable-expire 3000 -j ACCEPT
 # blacklist IP
 iptables -A IPTRACK -j SET --add-set blacklist src
 # LOG in /var/log/kern.log
