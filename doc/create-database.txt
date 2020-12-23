@@ -1,0 +1,13 @@
+install mariadb-server
+install php-fpm
+install php-mysqli
+
+mysql_secure_installation
+
+create database
+	CREATE DATABASE membersdb;
+	USE membersdb;
+	CREATE TABLE members (email VARCHAR(128), passw(256), PRIMARY KEY(email));
+	CREATE USER admindb@localhost IDENTIFIED BY 'passwordadmindb'
+	GRANT ALL PRIVILEGES on membersdb.* to admindb@localhost;
+	FLUSH PRIVILEGES
