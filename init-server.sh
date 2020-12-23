@@ -97,7 +97,7 @@ $PACKMAN $PACKARG install sendmail
 $PACKMAN $PACKARG install nginx
 $PACKMAN $PACKARG install mariadb-server
 $PACKMAN $PACKARG install php-mysqli
-$PACKMAN $PACKARG install php-fpm #required for nginx (FastCGI Process Manager)
+$PACKMAN $PACKARG install php-fpm #required for nginx/php (FastCGI Process Manager)
 #$PACKMAN $PACKARG install phpmyadmin #eventually
 
 #-------------------------------------------------------------------------------------------
@@ -179,6 +179,36 @@ fi' >/root/watch_cron.sh && chmod +x /root/watch_cron.sh
 echo '0 0 * * *	/root/watch_cron.sh' >>/root/crontab
 
 crontab -u root /root/crontab
+
+#-------------------------------------------------------------------------------------------
+# configure nginx
+
+confirm "Nginx will be configured to host a web server in /var/www/roger-skyline/."
+
+echo '
+server {
+	listen 80;
+	listen [::]:80;
+
+	root /var/www/roger-skyline;
+	index.php;
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		# With php-fpm (or other unix sockets):
+		fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+	}
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+' > /etc/nginx/sites-available/roger-skyline
+
+ln -s /etc/nginx/sites-available/roger-skyline /etc/nginx/sites-enabled/roger-skyline
+rm /etc/nginx/sites-enabled/default
+mkdir /var/www/roger-skyline
+systemctl restart nginx
 
 PATH="$OLDPATH"
 echo "Done."
