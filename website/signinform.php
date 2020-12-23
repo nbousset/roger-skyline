@@ -16,18 +16,14 @@
 			<br/><br/>
 			<input type="submit" name="signinform" value="SIGN IN">
 		</form>
+		<?php
+			if (isset($_GET['error']))
+			{
+				echo '<br/>' . $_GET['error'];
+				if ($_GET['error'] == 'You are not registered.')
+					echo "<br/><br/><a href='signup_form.php'>SIGN UP<a/>";
+				$_GET['error'] = NULL;
+			}
+		?>
 	</div>
-	<?php
-	if (isset($_GET['error']))
-	{
-		echo '<br/>' . $_GET['error'];
-		if ($_GET['error'] == 'You are not registered.') {
-			?>
-			<div align="center">
-				<a href="signupform.php">SIGN UP</a><br>
-			</div>
-			<?php
-			$_GET['error'] = NULL;
-		}
-	?>
 </html>
