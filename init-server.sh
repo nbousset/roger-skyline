@@ -185,25 +185,23 @@ crontab -u root /root/crontab
 
 confirm "Nginx will be configured to host a web server in /var/www/roger-skyline/."
 
-echo '
-server {
+echo 'server {
 	listen 80;
 	listen [::]:80;
 
 	root /var/www/roger-skyline;
-	index.php;
+	index index.php;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
 
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
 		# With php-fpm (or other unix sockets):
 		fastcgi_pass unix:/run/php/php7.3-fpm.sock;
 	}
-
-	location / {
-		try_files $uri $uri/ =404;
-	}
-}
-' > /etc/nginx/sites-available/roger-skyline
+}' > /etc/nginx/sites-available/roger-skyline
 
 ln -s /etc/nginx/sites-available/roger-skyline /etc/nginx/sites-enabled/roger-skyline
 rm /etc/nginx/sites-enabled/default
