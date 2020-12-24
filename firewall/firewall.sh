@@ -33,7 +33,9 @@ iptables -A INPUT -i lo -j ACCEPT
 iptables -A INPUT -m set ! --match-set blacklist src -j SRCFILTER
 # DROP the rest (default policy)
 # tcp -> REJECT flags=RST (to prevent port scanning)
-iptables -A INPUT -j REJECT --reject-with icmp-port-unreachable
+iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
 #-------------------
 # SRCFILTER CHAIN
 
@@ -46,7 +48,9 @@ iptables -A SRCFILTER -j SET --add-set blacklist src
 # LOG in /var/log/kern.log (non-terminating target),
 iptables -A SRCFILTER -j LOG --log-prefix '/!\ SUSPECT IP: '
 
-iptables -A SRCFILTER -j REJECT --reject-with icmp-port-unreachable
+iptables -A SRCFILTER -p udp -j REJECT --reject-with icmp-port-unreachable
+iptables -A SRCFILTER -p tcp -j REJECT --reject-with tcp-reset
+iptables -A SRCFILTER -j REJECT --reject-with icmp-proto-unreachable
 # DROP the rest
 iptables -A SRCFILTER -j DROP
 
