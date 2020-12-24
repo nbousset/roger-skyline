@@ -1,6 +1,6 @@
 install mariadb-server
 
-mysql_secure_installation
+sudo mysql_secure_installation
 sudo mysql -u root -p
 
 >CREATE DATABASE membersDB;
@@ -9,3 +9,22 @@ sudo mysql -u root -p
 >CREATE USER membersDBadmin@localhost IDENTIFIED BY 'passwordDBadmin';
 >GRANT ALL PRIVILEGES on membersDB.* to membersDBadmin@localhost;
 >FLUSH PRIVILEGES;
+
+IPTRACK everything (after ESTABLISHED)
+	PORTFILTER if hashlimit is ok
+		ACCEPT if port/state/limit are ok
+		REJECT & DROP otherwise
+	SET blacklist & LOG otherwise
+	REJECT & DROP
+
+separate files:
+	firewall.sh
+	ipset-persistent.service
+	ipset-restore.sh
+	ipset-save.sh
+	update_script.sh
+	watch_cron.sh
+	roger-skyline
+	website/*.php
+
+ssl

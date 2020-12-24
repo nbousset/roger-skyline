@@ -1,0 +1,12 @@
+[Unit]
+Description=ipset persistent configuration
+Before=netfilter-persistent.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ipset-restore.sh
+ExecStop=/usr/local/sbin/ipset-save.sh
+
+[Install]
+RequiredBy=netfilter-persistent.service

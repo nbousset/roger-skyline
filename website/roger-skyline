@@ -1,0 +1,17 @@
+server {
+	listen 80;
+	listen [::]:80;
+
+	root /var/www/roger-skyline;
+	index index.php;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		# With php-fpm (or other unix sockets):
+		fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+	}
+}
