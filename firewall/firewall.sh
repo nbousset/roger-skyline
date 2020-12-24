@@ -32,6 +32,8 @@ iptables -A INPUT -i lo -j ACCEPT
 # not in blacklist -> SRCFILTER
 iptables -A INPUT -m set ! --match-set blacklist src -j SRCFILTER
 # DROP the rest (default policy)
+# tcp -> REJECT flags=RST (to prevent port scanning)
+iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
 
 #-------------------
 # SRCFILTER CHAIN
