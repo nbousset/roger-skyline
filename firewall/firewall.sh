@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WORKDIR='/root/roger-skyline'
+WORKDIR='/root/roger-skyline/firewall'
 
 # Flush
 iptables -F
