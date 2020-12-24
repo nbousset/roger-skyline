@@ -13,6 +13,7 @@ rm /etc/systemd/system/ipset-persistent.service
 rm /etc/systemd/system/netfilter-persistent.service.requires/ipset-persistent.service
 rm /usr/local/sbin/ipset-restore.sh
 rm /usr/local/sbin/ipset-save.sh
+systemctl daemon-reload
 # reset crons
 rm /usr/local/sbin/update_script.sh
 rm /usr/local/sbin/watch_cron.sh
