@@ -1,6 +1,6 @@
 # reset iptables
 iptables -F
-iptables -P INPUT ACCCEPT
+iptables -P INPUT ACCEPT
 iptables -P FORWARD ACCEPT
 rm /etc/iptables/rules.v4
 systemctl stop netfilter-persistent
