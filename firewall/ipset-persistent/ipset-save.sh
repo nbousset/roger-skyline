@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/sbin/ipset save > /etc/iptables/sets.v4
+/sbin/ipset save -file /etc/iptables/sets.v4
 exit 0

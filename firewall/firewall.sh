@@ -55,9 +55,11 @@ iptables -A TCPFILTER -j DROP
 
 # Save iptables rules. Netfilter-persistent will load them at boot.
 netfilter-persistent save
-# Use our own service to save ipset sets at shutdown and load them at boot.
+# Save ipset set in /etc/iptables.sets.v4
+ipset save -file /etc/iptables.sets.v4
+# Use our own service to load ipset sets at boot.
 cp $WORKDIR/ipset-persistent/ipset-persistent.service /etc/systemd/system/
-# Those are 2 scripts used by our service
+# The 2 scripts used by our service to save/load sets
 cp $WORKDIR/ipset-persistent/ipset-restore.sh $WORKDIR/ipset-persistent/ipset-save.sh /usr/local/sbin/
 # reload services
-systemctl daemon-reload && systemctl enable ipset-persistent.service
+systemctl daemon-reload && systemctl enable ipset-persistent.service && systemctl start ipset-persistent.service
