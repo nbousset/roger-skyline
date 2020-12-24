@@ -42,7 +42,7 @@ iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
 # ESTABLISHED,RELATED -> ACCEPT
 iptables -A SRCFILTER -m state --state ESTABLISHED,RELATED -j ACCEPT
 # below the strict limit of 3/sec/IP -> TCPFILTER
-iptables -A SRCFILTER -m hashlimit --hashlimit-name srcfilter --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 --hashlimit-htable-expire 2000 -j TCPFILTER
+iptables -A SRCFILTER -m hashlimit --hashlimit-name srcfilter --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 -j TCPFILTER
 # above this limit -> SET in blacklist (SET is a non-terminating target, meaning the following rules will be applied),
 iptables -A SRCFILTER -j SET --add-set blacklist src
 # LOG in /var/log/kern.log (non-terminating target),
