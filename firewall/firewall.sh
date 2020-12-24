@@ -20,6 +20,8 @@ iptables -N SRCFILTER
 # Add user-defined chain for protocol and destination filtering
 iptables -N TCPFILTER
 # use ipset module to create a blacklist for suspect IPs. IPs are blacklisted for 60sec
+ipset flush
+ipset destroy
 ipset create blacklist hash:ip timeout 60
 
 #-------------------
@@ -62,4 +64,5 @@ cp $WORKDIR/ipset-persistent/ipset-persistent.service /etc/systemd/system/
 # The 2 scripts used by our service to save/load sets
 cp $WORKDIR/ipset-persistent/ipset-restore.sh $WORKDIR/ipset-persistent/ipset-save.sh /usr/local/sbin/
 # reload services
-systemctl daemon-reload && systemctl enable ipset-persistent.service && systemctl start ipset-persistent.service
+systemctl daemon-reload && systemctl enable ipset-persistent.service
+systemctl start ipset-persistent.service && systemctl start netfilter-persistent.service
