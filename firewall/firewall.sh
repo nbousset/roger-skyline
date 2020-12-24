@@ -60,4 +60,4 @@ cp $WORKDIR/ipset-persistent/ipset-persistent.service /etc/systemd/system/
 # Those are 2 scripts used by our service
 cp $WORKDIR/ipset-persistent/ipset-restore.sh $WORKDIR/ipset-persistent/ipset-save.sh /usr/local/sbin/
 # reload services
-systemctl daemon-reload && systemctl enable ipset-persistent.service && systemctl start ipset-persistent.service
+systemctl daemon-reload && systemctl enable ipset-persistent.service
