@@ -27,7 +27,7 @@ options() {
 
 if [ $# -lt 4 ]; then usage; fi
 # could use regex to check IP/MASK/GATE format
-# could check that network interface is valid (in /etc/network/interfaces)
+# could check that network interface is valid (i.e. in /etc/network/interfaces)
 
 NETWINT=$1
 ADDRESS=$2
@@ -156,8 +156,8 @@ iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
 # default policy DROP
 
 # IPTRACK CHAIN
-# limit=2/s/IP -> ACCEPT
-iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 --hashlimit-htable-expire 3000 -j ACCEPT
+# limit=3/s/IP -> ACCEPT All incoming connections are stored in a hashtable for 2 sec. If an address IP sends more than 3 NEW per second, it is blacklisted for 60 sec and the IP is logged
+iptables -A IPTRACK -m hashlimit --hashlimit-name iptrack --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 3/s --hashlimit-burst 3 --hashlimit-htable-expire 2000 -j ACCEPT
 # blacklist IP
 iptables -A IPTRACK -j SET --add-set blacklist src
 # LOG in /var/log/kern.log
@@ -237,7 +237,7 @@ echo '0 0 * * *	/root/watch_cron.sh' >> /root/crontab
 crontab -u root /root/crontab
 
 #-------------------------------------------------------------------------------------------
-# configure nginx
+# configure nginx and setup website
 
 confirm "Nginx will be configured to host a website in /var/www/roger-skyline/."
 
@@ -261,7 +261,7 @@ echo 'server {
 
 ln -s /etc/nginx/sites-available/roger-skyline /etc/nginx/sites-enabled/roger-skyline
 rm /etc/nginx/sites-enabled/default
-mkdir /var/www/roger-skyline
+mkdir /var/www/roger-skyline && cp website/* /var/www/roger-skyline/
 systemctl restart nginx
 
 PATH="$OLDPATH"

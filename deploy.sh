@@ -2,6 +2,7 @@
 
 OLDPATH="$PATH"
 export PATH="/usr/sbin:$PATH"
+WORKDIR='/root/roger-skyline'
 
 # This script must be run as root and assumes that it is running on Debian 10.
 # It doesn't handle errors and may have an undefined behaviour if a command fails or if an
@@ -123,7 +124,7 @@ systemctl restart ssh
 confirm "The firewall will be configured to only accept local communication and SSH/HTTP/HTTPS incoming connections.
 It will provide a basic protection against DoS and port scanning."
 
-firewall/firewall.sh
+$WORKDIR/firewall/firewall.sh
 
 #-------------------------------------------------------------------------------------------
 # stop some useless services
@@ -143,21 +144,26 @@ systemctl disable console-setup
 confirm "A new crontab for root will be setup:
 Packages will be automatically updated once a week at 4:00 AM."
 
-cp crontab/update_script.sh /usr/local/sbin/
-cp crontab/watch_cron.sh /usr/local/sbin/
-crontab -u root /crontab/root
+cp $WORKDIR/crontab/update_script.sh /usr/local/sbin/
+cp $WORKDIR/crontab/watch_cron.sh /usr/local/sbin/
+crontab -u root $WORKDIR/crontab/root
 
 #-------------------------------------------------------------------------------------------
 # configure nginx and setup website
 
 confirm "Nginx will be configured to host a website in /var/www/roger-skyline/."
 
-cp website/roger-skyline /etc/nginx/sites-available/
-mkdir /var/www/roger-skyline && cp website/*.php /var/www/roger-skyline/
+# the configuration file
+cp $WORKDIR/website/roger-skyline /etc/nginx/sites-available/
+# the folder containing the srcs
+mkdir /var/www/roger-skyline && cp $WORKDIR/website/*.php /var/www/roger-skyline/
+# the symlink to enable the server
 ln -s /etc/nginx/sites-available/roger-skyline /etc/nginx/sites-enabled/roger-skyline
+# disable the default site
 rm /etc/nginx/sites-enabled/default
+# restart nginx
 systemctl restart nginx
 
-PATH="$OLDPATH"
+export PATH="$OLDPATH"
 echo "Done."
 exit 0
