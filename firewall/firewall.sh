@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script requires iptables-persistent and ipset packages to be installed
+
 WORKDIR='/root/roger-skyline/firewall'
 
 # Flush
@@ -51,13 +53,11 @@ iptables -A TCPFILTER -p tcp -m multiport --dports 80,443,22222 -m state --state
 # everything else -> DROP
 iptables -A TCPFILTER -j DROP
 
-# Netfilter-persistent.service will automatically save/load the iptables rules at shutdown/boot.
-# There is no such service for ipset, so we must use our own service to do this. This service is
-# a dependency for netfilter-persistent, as iptables rules reference ipset sets.
+# Save iptables rules. Netfilter-persistent will load them at boot.
+netfilter-persistent save
+# Use our own service to save ipset sets at shutdown and load them at boot.
 cp $WORKDIR/ipset-persistent/ipset-persistent.service /etc/systemd/system/
-# Those are 2 scripts used by the service
+# Those are 2 scripts used by our service
 cp $WORKDIR/ipset-persistent/ipset-restore.sh $WORKDIR/ipset-persistent/ipset-save.sh /usr/local/sbin/
-# reload services and start ours
-systemctl daemon-reload && systemctl enable ipset-persistent.service
-systemctl start ipset-persistent.service
-systemctl start netfilter-persistent.service
+# reload services
+systemctl daemon-reload && systemctl enable ipset-persistent.service && systemctl start ipset-persistent.service
