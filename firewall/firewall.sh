@@ -1,5 +1,7 @@
 #!/bin/bash
 
+WORKDIR='/root/roger-skyline'
+
 # Flush
 iptables -F
 iptables -X
@@ -24,7 +26,7 @@ ipset create blacklist hash:ip timeout 60
 # loopback -> ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
 # not in blacklist -> SRCFILTER
-iptables -A INPUT -m set --match-set blacklist --return-nomatch src -j SRCFILTER
+iptables -A INPUT -m set --match-set blacklist src --return-nomatch -j SRCFILTER
 # DROP the rest (default policy)
 
 #-------------------
