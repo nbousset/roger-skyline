@@ -24,8 +24,6 @@ ipset flush
 ipset destroy
 ipset create blacklist hash:ip timeout 60
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 10000
-
 #-------------------
 # INPUT CHAIN
 
@@ -34,10 +32,6 @@ iptables -A INPUT -i lo -j ACCEPT
 # not in blacklist -> SRCFILTER
 iptables -A INPUT -m set ! --match-set blacklist src -j SRCFILTER
 # DROP the rest (default policy)
-# tcp -> REJECT flags=RST (to prevent port scanning)
-iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
-iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
-iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
 
 #-------------------
 # SRCFILTER CHAIN
@@ -50,10 +44,6 @@ iptables -A SRCFILTER -m hashlimit --hashlimit-name srcfilter --hashlimit-mode s
 iptables -A SRCFILTER -j SET --add-set blacklist src
 # LOG in /var/log/kern.log (non-terminating target),
 iptables -A SRCFILTER -j LOG --log-prefix '/!\ SUSPECT IP: '
-
-iptables -A SRCFILTER -p udp -j REJECT --reject-with icmp-port-unreachable
-iptables -A SRCFILTER -p tcp -j REJECT --reject-with tcp-reset
-iptables -A SRCFILTER -j REJECT --reject-with icmp-proto-unreachable
 # DROP the rest
 iptables -A SRCFILTER -j DROP
 
@@ -61,12 +51,7 @@ iptables -A SRCFILTER -j DROP
 # TCPFILTER CHAIN
 
 # protocol=tcp, dports=http/https/ssh, state=NEW, flags=SYN, limit-burst=50 -> ACCEPT
-iptables -A TCPFILTER -p tcp -m multiport --dports 10000,443,22222 -m state --state NEW --tcp-flags ALL SYN -m limit --limit 5/s --limit-burst 50 -j ACCEPT
-
-iptables -A SRCFILTER -p udp -j REJECT --reject-with icmp-port-unreachable
-iptables -A SRCFILTER -p tcp -j REJECT --reject-with tcp-reset
-iptables -A SRCFILTER -j REJECT --reject-with icmp-proto-unreachable
-
+iptables -A TCPFILTER -p tcp -m multiport --dports 80,443,22222 -m state --state NEW --tcp-flags ALL SYN -m limit --limit 5/s --limit-burst 50 -j ACCEPT
 # everything else -> DROP
 iptables -A TCPFILTER -j DROP
 
