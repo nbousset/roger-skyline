@@ -156,7 +156,7 @@ confirm "Nginx will be configured to host a website in /var/www/roger-skyline/."
 # the configuration file
 cp $WORKDIR/website/roger-skyline /etc/nginx/sites-available/
 # the folder containing the srcs
-mkdir /var/www/roger-skyline && cp $WORKDIR/website/*.php /var/www/roger-skyline/
+mkdir /var/www/roger-skyline && cp $WORKDIR/website/src/* /var/www/roger-skyline/
 # the symlink to enable the server
 ln -s /etc/nginx/sites-available/roger-skyline /etc/nginx/sites-enabled/roger-skyline
 # disable the default site
