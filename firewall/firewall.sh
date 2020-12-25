@@ -15,10 +15,16 @@ iptables -t mangle -X
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT ACCEPT
+
 # Add user-defined chain for IP tracking and filtering (DoS prevention)
 iptables -N SRCFILTER
 # Add user-defined chain for protocol and destination filtering
 iptables -N TCPFILTER
+# Add user-defined chain for accepting new tcp connections
+iptables -N TCPACCEPT
+# Add user-defined chain for rejecting unwanted packets with appropriate flags
+iptables -N REJECTRST
+
 # use ipset module to create a blacklist for suspect IPs. IPs are blacklisted for 60sec
 ipset flush
 ipset destroy
@@ -44,16 +50,31 @@ iptables -A SRCFILTER -m hashlimit --hashlimit-name srcfilter --hashlimit-mode s
 iptables -A SRCFILTER -j SET --add-set blacklist src
 # LOG in /var/log/kern.log (non-terminating target),
 iptables -A SRCFILTER -j LOG --log-prefix '/!\ SUSPECT IP: '
-# DROP the rest
-iptables -A SRCFILTER -j DROP
+# REJECT
+iptables -A SRCFILTER -j REJECTRST
 
 #-------------------
 # TCPFILTER CHAIN
 
 # protocol=tcp, dports=http/https/ssh, state=NEW, flags=SYN, limit-burst=50 -> ACCEPT
-iptables -A TCPFILTER -p tcp -m multiport --dports 80,443,22222 -m state --state NEW --tcp-flags ALL SYN -m limit --limit 5/s --limit-burst 50 -j ACCEPT
-# everything else -> DROP
-iptables -A TCPFILTER -j DROP
+iptables -A TCPFILTER -p tcp -m multiport --dports 80,443,22222 -m state --state NEW --tcp-flags ALL SYN -j TCPACCEPT
+# everything else -> REJECT
+iptables -A TCPFILTER -j REJECTRST
+
+#-------------------
+# TCPACCEPT CHAIN
+
+# limit burst 50 5/s
+iptables -A TCPACCEPT -m limit --limit 5/s --limit-burst 50 -j ACCEPT
+# above limit -> DROP to avoid clients closing connection instantly if server is saturated
+iptables -A TCPACCEPT -j DROP
+
+#-------------------
+# REJECTRST CHAIN
+
+iptables -A REJECTRST -p udp -j REJECT --reject-with imcp-port-unreachable
+iptables -A REJECTRST -p tcp -j REJECT --reject-with tcp-reset
+iptables -A REJECTRST -j REJECT --reject-with imcp-proto-unreachable
 
 # Save iptables rules. Netfilter-persistent will load them at boot.
 netfilter-persistent save
