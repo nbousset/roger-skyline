@@ -3,10 +3,11 @@ Network &amp; system administration initiation project
 
 This project consists of setting up a virtual machine and configure it to host a basic web server. It covers the following topics:
 * VM creation and disk partitioning
-* basic network configuration
+* network configuration
 * ssh configuration
-* firewall configuration
+* network security
 * tasks automation
-* creation of a basic website
+* web service
 
-The firewall configuration succesfully protected the server against slowloris' DoS attacks. Nmap's basic port scanning (SYN, ACK, NULL, XMAS packets) reports that all ports are closed, even when specifying a target port.
+The firewall configuration succesfully protected the server against slowloris' DoS attacks and contains nmap's basic port scanning.
+The website consists in a simple login page (sign up/in/out). A database on the VM stores members' email addresses and encrypted passwords.
