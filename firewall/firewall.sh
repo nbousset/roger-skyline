@@ -72,9 +72,9 @@ iptables -A TCPACCEPT -j DROP
 #-------------------
 # REJECTRST CHAIN
 
-iptables -A REJECTRST -p udp -j REJECT --reject-with imcp-port-unreachable
+iptables -A REJECTRST -p udp -j REJECT --reject-with icmp-port-unreachable
 iptables -A REJECTRST -p tcp -j REJECT --reject-with tcp-reset
-iptables -A REJECTRST -j REJECT --reject-with imcp-proto-unreachable
+iptables -A REJECTRST -j REJECT --reject-with icmp-proto-unreachable
 
 # Save iptables rules. Netfilter-persistent will load them at boot.
 netfilter-persistent save
