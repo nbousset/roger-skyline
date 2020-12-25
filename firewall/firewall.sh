@@ -38,6 +38,8 @@ iptables -A INPUT -i lo -j ACCEPT
 # not in blacklist -> SRCFILTER
 iptables -A INPUT -m set ! --match-set blacklist src -j SRCFILTER
 # DROP the rest (default policy)
+# REJECT
+iptables -A SRCFILTER -j REJECTRST
 
 #-------------------
 # SRCFILTER CHAIN
@@ -72,11 +74,11 @@ iptables -A TCPACCEPT -j DROP
 #-------------------
 # REJECTRST CHAIN
 
-iptables -A REJECTRST -p udp -j REJECT --reject-with icmp-port-unreachable
 iptables -A REJECTRST -p tcp -j REJECT --reject-with tcp-reset
+iptables -A REJECTRST -p udp -j REJECT --reject-with icmp-port-unreachable
 iptables -A REJECTRST -j REJECT --reject-with icmp-proto-unreachable
 
-# Save iptables rules. Netfilter-persistent will load them at boot.
+# Save iptables rules (/etc/iptables/rules.v4). Netfilter-persistent will load them at boot.
 netfilter-persistent save
 # Save ipset set in /etc/iptables.sets.v4
 ipset save -file /etc/iptables.sets.v4
