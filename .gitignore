@@ -1,3 +1,3 @@
-debian_vm
-website_old
 debian-10.6.0-amd64-netinst.iso
+debian_vm
+reset.sh
