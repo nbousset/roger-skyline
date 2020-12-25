@@ -39,7 +39,7 @@ iptables -A INPUT -i lo -j ACCEPT
 iptables -A INPUT -m set ! --match-set blacklist src -j SRCFILTER
 # DROP the rest (default policy)
 # REJECT
-iptables -A SRCFILTER -j REJECTRST
+iptables -A INPUT -j REJECTRST
 
 #-------------------
 # SRCFILTER CHAIN
