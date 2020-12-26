@@ -47,7 +47,7 @@ iptables -A INPUT -j SET --add-set blacklist src --exist
 # ESTABLISHED,RELATED -> ACCEPT
 iptables -A SRCFILTER -m state --state ESTABLISHED,RELATED -j ACCEPT
 # below the strict limit of 2/sec/IP -> TCPFILTER # could increase limit a bit
-iptables -A SRCFILTER -m hashlimit --hashlimit-name srcfilter --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 2/s --hashlimit-burst 2 --hashlimit-htable-expire 2000 -j TCPFILTER
+iptables -A SRCFILTER -m hashlimit --hashlimit-name srcfilter --hashlimit-mode srcip --hashlimit-srcmask 32 --hashlimit-upto 5/s --hashlimit-burst 5 --hashlimit-htable-expire 2000 -j TCPFILTER
 # above the limit -> SET in blacklist (SET is a non-terminating target, meaning the following rules will be applied),
 iptables -A SRCFILTER -j SET --add-set blacklist src
 # LOG in /var/log/kern.log (non-terminating target),
