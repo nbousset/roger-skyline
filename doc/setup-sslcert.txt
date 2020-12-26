@@ -1,0 +1,14 @@
+# Create the certificate and the key:
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/roger-skyline.key -out /etc/ssl/certs/roger-skyline.crt
+# Create a Diffie-Hellman group (to generate a short term key for every session)
+openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+
+Modify the server block in the website conf file:
+-change the listening port from 80 to 443
+-add the paths of the cert and key in the server block:
+	ssl_certificate /etc/ssl/certs/roger-skyline.crt;
+	ssl_certificate_key /etc/ssl/private/roger-skyline.key;
+-configure ssl as needed
+
+Create a new server block listening on port 80 to redirect to port 443:
+	return 301 https://$server_name$request_uri;
