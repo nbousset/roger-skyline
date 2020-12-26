@@ -151,9 +151,14 @@ crontab -u root $WORKDIR/crontab/root
 #-------------------------------------------------------------------------------------------
 # configure nginx and setup website
 
-confirm "Nginx will be configured to host a website in /var/www/roger-skyline/."
+confirm "Nginx will be configured to host a website."
 
-# the configuration file
+# the ssl cert and key
+cp $WORKDIR/website/roger-skyline.crt /etc/ssl/certs/
+cp $WORKDIR/website/roger-skyline.key /etc/ssl/private/
+# the ssl configuration file
+cp $WORKDIR/website/roger-skyline-ssl.conf /etc/nginx/snippets/
+# the server configuration file
 cp $WORKDIR/website/roger-skyline /etc/nginx/sites-available/
 # the folder containing the srcs
 mkdir /var/www/roger-skyline && cp $WORKDIR/website/src/* /var/www/roger-skyline/
