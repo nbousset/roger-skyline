@@ -9,5 +9,3 @@ sudo mysql -u root -p
 >CREATE USER membersDBadmin@localhost IDENTIFIED BY 'passwordDBadmin';
 >GRANT ALL PRIVILEGES on membersDB.* to membersDBadmin@localhost;
 >FLUSH PRIVILEGES;
-
-ssl
