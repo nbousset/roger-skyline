@@ -99,7 +99,6 @@ $PACKMAN $PACKARG install nginx
 $PACKMAN $PACKARG install mariadb-server
 $PACKMAN $PACKARG install php-mysqli
 $PACKMAN $PACKARG install php-fpm # required for nginx/php (FastCGI Process Manager)
-#$PACKMAN $PACKARG install phpmyadmin # eventually
 
 #-------------------------------------------------------------------------------------------
 # add user to sudo group
