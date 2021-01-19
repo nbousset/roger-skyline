@@ -10,6 +10,7 @@ if (isset($_SESSION['email']))
 	<html>
 		<div align="center">
 			<a href="signout.php">SIGN OUT</a><br>
+			<a href="delaccount.php">DELETE ACCOUNT</a><br>
 		</div>
 	</html>
 	<?php
